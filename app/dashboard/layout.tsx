@@ -14,6 +14,7 @@ const patientNavigation = [
 
 const caregiverNavigation = [
   { name: "Overview", href: "/dashboard", icon: Home },
+  { name: "Manage Patients", href: "/dashboard/patients", icon: Users },
   { name: "Progress", href: "/dashboard/progress", icon: LineChart },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
 ]
@@ -50,20 +51,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="min-h-screen bg-muted/30">
-      {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-foreground/50 z-40 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
+        <div className="fixed inset-0 bg-foreground/50 z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}
 
-      {/* Sidebar */}
-      <aside
-        className={`fixed top-0 left-0 z-50 h-full w-72 bg-card border-r border-border transform transition-transform duration-200 ease-in-out lg:translate-x-0 ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
+      <aside className={`fixed top-0 left-0 z-50 h-full w-72 bg-card border-r border-border transform transition-transform duration-200 ease-in-out lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
         <div className="flex flex-col h-full">
           <div className="flex items-center justify-between p-6 border-b border-border">
             <Link href="/" className="flex items-center gap-2">
@@ -72,11 +64,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </div>
               <span className="text-xl font-semibold text-foreground">MindLite</span>
             </Link>
-            <button
-              onClick={() => setSidebarOpen(false)}
-              className="lg:hidden p-2 rounded-lg hover:bg-muted transition-colors"
-              aria-label="Close sidebar"
-            >
+            <button onClick={() => setSidebarOpen(false)} className="lg:hidden p-2 rounded-lg hover:bg-muted transition-colors">
               <X className="w-5 h-5 text-muted-foreground" />
             </button>
           </div>
@@ -90,9 +78,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   href={item.href}
                   onClick={() => setSidebarOpen(false)}
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${
-                    isActive
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                    isActive ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground hover:bg-muted"
                   }`}
                 >
                   <item.icon className="w-5 h-5" />
@@ -106,9 +92,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="p-4 border-t border-border">
             <div className="flex items-center gap-3 px-4 py-3 mb-2">
               <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                <span className="text-primary font-semibold">
-                  {user.email.charAt(0).toUpperCase()}
-                </span>
+                <span className="text-primary font-semibold">{user.email.charAt(0).toUpperCase()}</span>
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-foreground truncate">{user.email}</p>
@@ -126,15 +110,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
       </aside>
 
-      {/* Main content */}
       <div className="lg:pl-72">
-        {/* Mobile header */}
         <header className="sticky top-0 z-30 flex items-center gap-4 px-4 py-4 bg-background/95 backdrop-blur border-b border-border lg:hidden">
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="p-2 rounded-lg hover:bg-muted transition-colors"
-            aria-label="Open sidebar"
-          >
+          <button onClick={() => setSidebarOpen(true)} className="p-2 rounded-lg hover:bg-muted transition-colors">
             <Menu className="w-6 h-6 text-foreground" />
           </button>
           <div className="flex items-center gap-2">
@@ -144,7 +122,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <span className="font-semibold text-foreground">MindLite</span>
           </div>
         </header>
-
         <main className="p-6 lg:p-8">{children}</main>
       </div>
     </div>

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime, UniqueConstraint
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from .database import Base
@@ -33,5 +33,15 @@ class FamilyMember(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"))
     name = Column(String(100))
-    relation = Column(String(100))  # e.g. "Mother", "Son", "Wife"
+    relation = Column(String(100))
     image_path = Column(String(255))
+
+
+class DoctorPatient(Base):
+    __tablename__ = "doctor_patients"
+
+    id = Column(Integer, primary_key=True, index=True)
+    doctor_id = Column(Integer, ForeignKey("users.id"))
+    patient_id = Column(Integer, ForeignKey("users.id"))
+
+    __table_args__ = (UniqueConstraint("doctor_id", "patient_id", name="uq_doctor_patient"),)

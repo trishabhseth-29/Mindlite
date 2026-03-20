@@ -16,3 +16,9 @@ class ScoreRequest(BaseModel):
     user_id: int
     game: str
     score: float
+
+
+class AddPatientRequest(BaseModel):
+    doctor_id: int
+    email: str
+    password: str
