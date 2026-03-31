@@ -177,12 +177,18 @@ export function getLatestScoresPerGame(email: string) {
     }
   }
 
+  // Calculate average of played games to use as a fallback for missing games
+  const playedScores = Object.values(latest)
+  const averagePlayed = playedScores.length > 0 
+    ? Math.round(playedScores.reduce((a, b) => a + b, 0) / playedScores.length) 
+    : 70
+
   return {
-    memory_match: latest["memory-match"] ?? 70,
-    word_recall: latest["word-recall"] ?? 70,
-    pattern_recognition: latest["pattern-recognition"] ?? 70,
-    face_recognition: latest["face-recognition"] ?? 70,
-    reaction_time: latest["reaction"] ? Math.round(1000 - latest["reaction"] * 8) : 900,
+    memory_match: latest["memory-match"] ?? averagePlayed,
+    word_recall: latest["word-recall"] ?? averagePlayed,
+    pattern_recognition: latest["pattern-recognition"] ?? averagePlayed,
+    face_recognition: latest["face-recognition"] ?? averagePlayed,
+    reaction_time: latest["reaction"] ? Math.round(1000 - latest["reaction"] * 8) : Math.round(1000 - averagePlayed * 8),
   }
 }
 
@@ -227,7 +233,7 @@ export async function gameCompleted(email: string, game: string, score: number) 
     const storedUser = localStorage.getItem("user")
     if (storedUser) {
       const { user_id } = JSON.parse(storedUser)
-      fetch(`${API_URL}/score`, {
+      await fetch(`${API_URL}/score`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ user_id, game, score }),
@@ -235,7 +241,10 @@ export async function gameCompleted(email: string, game: string, score: number) 
     }
   } catch {}
 
-  // Predictions are now doctor-only — triggered from Manage Patients page
+  // 3. Also sync all data by email to ensure backend has complete picture
+  try {
+    await syncToBackend(email)
+  } catch {}
 }
 
 // ─── Get all registered patient emails (for caregiver) ───────────────────────

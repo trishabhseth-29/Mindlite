@@ -196,11 +196,13 @@ def send_email(payload: schemas.SendEmailRequest, db: Session = Depends(get_db))
     """
 
     errors = []
+    
     sent = []
     smtp_host = "smtp.gmail.com"
     smtp_port = 587
     smtp_user = "mindlite.doc@gmail.com"
-    SMTP_PASS=your_password 
+    #Stmp_pass = YOUR_PASSWORD
+    smtp_pass = "aldl qxii nhgf dqel"
     for recipient in payload.caregiver_emails:
         try:
             msg = MIMEMultipart("alternative")

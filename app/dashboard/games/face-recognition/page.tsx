@@ -160,7 +160,7 @@ export default function FaceRecognitionGame() {
         {saved && (
           <div className="flex items-center justify-center gap-2 text-emerald-500 mb-4 text-sm font-medium">
             <CheckCircle className="w-4 h-4" />
-            Score saved & AI prediction updated
+            Good job! keep it up.
           </div>
         )}
 

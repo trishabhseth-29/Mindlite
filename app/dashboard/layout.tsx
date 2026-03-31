@@ -8,7 +8,6 @@ import { Brain, Home, Gamepad2, LineChart, Users, Settings, LogOut, Menu, X, Che
 const patientNavigation = [
   { name: "Overview", href: "/dashboard", icon: Home },
   { name: "Games", href: "/dashboard/games", icon: Gamepad2 },
-  { name: "Progress", href: "/dashboard/progress", icon: LineChart },
   { name: "Family", href: "/dashboard/family", icon: Users },
   { name: "Caregivers", href: "/dashboard/caregivers", icon: HeartPulse },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },

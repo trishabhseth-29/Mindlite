@@ -23,12 +23,14 @@ def predict_score(data):
 
     score = model_a.predict(features)[0]
 
-    if score > 75:
-        risk = "Low Risk"
-    elif score > 50:
-        risk = "Moderate Risk"
+    if score > 80:
+        risk = "Normal"
+    elif score > 60:
+        risk = "Mild"
+    elif score > 40:
+        risk = "Moderate"
     else:
-        risk = "High Risk"
+        risk = "Severe"
 
     return {"score": round(score, 2), "risk": risk}
 
@@ -40,21 +42,29 @@ with open(model_b_path, "rb") as f:
 
 def predict_from_games(data):
     """5-feature prediction using game scores: memory_match, word_recall, pattern_recognition, face_recognition, reaction_time."""
+    
+    rt = float(data["reaction_time"])
+    # If reaction time is excessively small (< 50), it was likely entered in seconds rather than ms
+    if rt < 50:
+        rt *= 1000
+
     features = np.array([[
         data["memory_match"],
         data["word_recall"],
         data["pattern_recognition"],
         data["face_recognition"],
-        data["reaction_time"]
+        rt
     ]])
 
     score = float(model_b.predict(features)[0])
 
-    if score > 75:
-        risk = "Low Risk"
-    elif score > 50:
-        risk = "Moderate Risk"
+    if score > 80:
+        risk = "Normal"
+    elif score > 60:
+        risk = "Mild"
+    elif score > 40:
+        risk = "Moderate"
     else:
-        risk = "High Risk"
+        risk = "Severe"
 
     return {"cognitive_score": round(score, 2), "risk": risk}

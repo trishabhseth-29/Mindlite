@@ -129,21 +129,35 @@ export default function ManagePatientsPage() {
     setPatients((prev) => prev.filter((p) => p.patient_id !== patientId))
   }
 
-  const handleLookup = (emailToLookup?: string) => {
+  const handleLookup = async (emailToLookup?: string) => {
     const searchEmail = (emailToLookup || lookupEmail).toLowerCase().trim()
     if (!searchEmail) {
       setLookupError("Please enter a patient email")
       return
     }
 
-    const scores = getScores(searchEmail)
-    if (scores.length === 0) {
-      setLookupError(`No data found for "${searchEmail}". The patient may not have played any games yet on this device.`)
+    // Check local data first (fast path)
+    const localScores = getScores(searchEmail)
+    if (localScores.length > 0) {
+      setLookupError("")
+      setViewingPatient(searchEmail)
       return
     }
 
-    setLookupError("")
-    setViewingPatient(searchEmail)
+    // No local data — check if patient exists on backend
+    try {
+      const res = await fetch(`${API_URL}/patient/${encodeURIComponent(searchEmail)}/data`)
+      if (res.ok) {
+        // Patient exists on backend — show their data view (may be empty)
+        setLookupError("")
+        setViewingPatient(searchEmail)
+        return
+      }
+    } catch {
+      // Backend unreachable — fall through to error
+    }
+
+    setLookupError(`No patient found with email "${searchEmail}". Make sure the patient is registered.`)
   }
 
   const handleLookupKeyDown = (e: React.KeyboardEvent) => {
@@ -208,6 +222,9 @@ export default function ManagePatientsPage() {
               placeholder="Enter patient email..."
               className="w-full pl-10 pr-4 py-3 rounded-xl border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               list="patient-emails"
+              autoComplete="off"
+              name="patient-lookup-email"
+              id="patient-lookup-email"
             />
             <datalist id="patient-emails">
               {knownPatients.map((e) => (
@@ -331,6 +348,7 @@ export default function ManagePatientsPage() {
                     required
                     className="w-full pl-10 pr-4 py-3 rounded-xl border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                     placeholder="patient@email.com"
+                    autoComplete="off"
                   />
                 </div>
               </div>
